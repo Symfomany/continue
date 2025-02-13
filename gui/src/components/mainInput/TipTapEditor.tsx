@@ -562,8 +562,8 @@ function TipTapEditor(props: TipTapEditorProps) {
     }
 
     return historyLength === 0
-      ? "Ask anything, '@' to add context"
-      : "Ask a follow-up";
+      ? "Demander avec contexte avec '@'"
+      : "Votre code";
   }
 
   useEffect(() => {

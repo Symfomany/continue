@@ -1,8 +1,8 @@
 {
   "name": "continue",
   "icon": "media/icon.png",
-  "author": "Continue Dev, Inc",
-  "version": "0.9.265",
+  "author": "Enedis",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/continuedev/continue"
@@ -18,9 +18,9 @@
   "homepage": "https://continue.dev",
   "qna": "https://github.com/continuedev/continue/issues/new/choose",
   "license": "Apache-2.0",
-  "displayName": "Continue - Codestral, Claude, and more",
+  "displayName": "Continue by Enedis",
   "pricing": "Free",
-  "description": "The leading open-source AI code assistant",
+  "description": "The Enedis AI code assistant",
   "publisher": "Continue",
   "engines": {
     "vscode": "^1.70.0",
@@ -615,6 +615,7 @@
     "quick-test": "npm run build-test && node ./out/runTestOnVSCodeHost.js",
     "prepackage": "node scripts/prepackage.js",
     "package": "node scripts/package.js",
+    "package-dist": "npm run vscode:prepublish && npm run package",
     "package-all": "node scripts/package-all.js",
     "package:pre-release": "node scripts/package.js --pre-release",
     "build:rust": "cargo-cp-artifact -ac sync sync.node -- cargo build --manifest-path ../../sync/Cargo.toml --message-format=json-render-diagnostics",

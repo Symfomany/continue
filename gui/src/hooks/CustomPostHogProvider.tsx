@@ -7,16 +7,13 @@ const CustomPostHogProvider = ({ children }: PropsWithChildren) => {
   const allowAnonymousTelemetry = useAppSelector(
     (store) => store?.config?.config?.allowAnonymousTelemetry,
   );
-
   const [client, setClient] = React.useState<any>(undefined);
-
   useEffect(() => {
     if (allowAnonymousTelemetry) {
       posthog.init("phc_AqciO8KANMzQgQ1vFxyVczxtcniokwhE9yxEpHMI1V6", {
         api_host: "https://eu.i.posthog.com",
-        disable_session_recording: true,
+        disable_session_recording: false,
         autocapture: false,
-        person_profiles: 'identified_only',
         capture_pageleave: false,
         capture_pageview: false,
       });

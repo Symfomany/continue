@@ -87,6 +87,9 @@ function ConfigPage() {
   // Workspace prompts
   const promptPath = config.experimental?.promptPath || "";
   const [formPromptPath, setFormPromptPath] = useState(promptPath);
+  const nni = config.ui?.nni ?? "";
+  const [ni, setNi] = useState(nni);
+
   const cancelChangePromptPath = () => {
     setFormPromptPath(promptPath);
   };
@@ -163,6 +166,15 @@ function ConfigPage() {
             <h2 className="mb-2 mt-0">User settings</h2>
           </div>
 
+        <div className="flex flex-col gap-4">
+           <Input
+                value={nni}
+                className="max-w-[100px]"
+                onChange={(e) =>
+                  setNi(e.target.value)
+                }
+              />
+          </div>
           <div className="flex flex-col gap-4">
             <ToggleSwitch
               isToggled={codeWrap}

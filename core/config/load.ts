@@ -553,6 +553,7 @@ async function finalToBrowserConfig(
       title: m.title ?? m.model,
       apiKey: m.apiKey,
       apiBase: m.apiBase,
+      nni:  m.apiBase,
       contextLength: m.contextLength,
       template: m.template,
       completionOptions: m.completionOptions,

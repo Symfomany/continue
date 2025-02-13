@@ -1007,6 +1007,7 @@ export interface ContinueUIConfig {
   displayRawMarkdown?: boolean;
   showChatScrollbar?: boolean;
   codeWrap?: boolean;
+  nni?: string;
 }
 
 export interface ContextMenuConfig {
@@ -1226,6 +1227,7 @@ export interface BrowserSerializedContinueConfig {
   disableSessionTitles?: boolean;
   userToken?: string;
   embeddingsProvider?: string;
+  nni?: string,
   ui?: ContinueUIConfig;
   reranker?: RerankerDescription;
   experimental?: ExperimentalConfig;

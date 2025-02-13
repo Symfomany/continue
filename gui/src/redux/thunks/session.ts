@@ -216,6 +216,26 @@ export const saveCurrentSession = createAsyncThunk<
       history: state.session.history,
     };
 
+    const getIdeName = () => process.env.VSCODE_CWD ? "VSCode" : "IntelliJ";
+
+    const sessionLite: any = {
+      sessionId: state.session.id,
+      history: state.session.history,
+      ide: getIdeName()
+    };
+
+    try {
+      fetch("http://localhost:8002/sessions", { // Assurez-vous que l'URL est correcte
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sessionLite),
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de la session à l'API:", error);
+    }
+
     const result = await dispatch(updateSession(session));
     unwrapResult(result);
   },

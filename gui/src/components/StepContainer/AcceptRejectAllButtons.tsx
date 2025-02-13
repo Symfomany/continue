@@ -13,6 +13,8 @@ export interface AcceptRejectAllButtonsProps {
 
 export type AcceptOrRejectOutcome = "acceptDiff" | "rejectDiff";
 
+
+
 export default function AcceptRejectAllButtons({
   pendingApplyStates,
   onAcceptOrReject,

@@ -21,6 +21,7 @@ export const sharedConfigSchema = z
     codeBlockToolbarPosition: z.enum(["top", "bottom"]),
     fontSize: z.number(),
     codeWrap: z.boolean(),
+    nni:  z.string(),
     displayRawMarkdown: z.boolean(),
     showChatScrollbar: z.boolean(),
 
