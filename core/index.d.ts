@@ -1,6 +1,6 @@
+import { ModelRole } from "@continuedev/config-yaml";
 import Parser from "web-tree-sitter";
 import { GetGhTokenArgs } from "./protocol/ide";
-import { ModelRole } from "@continuedev/config-yaml";
 declare global {
   interface Window {
     ide?: "vscode";
@@ -600,7 +600,7 @@ export interface IdeSettings {
   remoteConfigSyncPeriod: number;
   userToken: string;
   enableControlServerBeta: boolean;
-  continueTestEnvironment: "none" | "production" | "test" | "local";
+  continueTestEnvironment: "none" | "production" | "staging" | "local";
   pauseCodebaseIndexOnStart: boolean;
 }
 
@@ -975,6 +975,11 @@ export interface TabAutocompleteOptions {
   disableInFiles?: string[];
   useImports?: boolean;
   showWhateverWeHaveAtXMs?: number;
+  // true = enabled, false = disabled, number = enabled with priority
+  experimental_includeClipboard: boolean | number;
+  experimental_includeRecentlyVisitedRanges: boolean | number;
+  experimental_includeRecentlyEditedRanges: boolean | number;
+  experimental_includeDiff: boolean | number;
 }
 
 export interface StdioOptions {
