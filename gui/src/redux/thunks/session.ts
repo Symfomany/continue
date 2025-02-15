@@ -221,6 +221,7 @@ export const saveCurrentSession = createAsyncThunk<
     const sessionLite: any = {
       sessionId: state.session.id,
       history: state.session.history,
+      action: "chat",
       ide: getIdeName()
     };
 

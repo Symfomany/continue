@@ -18,14 +18,33 @@ const val DEFAULT_CONFIG =
       "provider": "anthropic",
       "apiKey": "",
       "title": "Claude 3.5 Sonnet"
-    }
+    },
+    {
+      "title": "Local LLM",
+      "provider": "openai",
+      "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct-AWQ",
+      "apiKey": "empty",
+      "apiBase": "http://localhost:8080/v1",
+      "maxPromptTokens": 2048
+    },
   ],
-  "tabAutocompleteModel": {
+  "tabAutocompleteModel": [
+  {
+      "title": "Local LLM",
+      "provider": "openai",
+      "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct-AWQ",
+      "apiKey": "empty",
+      "apiBase": "http://localhost:8080/v1",
+      "maxPromptTokens": 2048
+    },  
+  {
     "title": "Codestral",
     "provider": "mistral",
     "model": "codestral-latest",
     "apiKey": "" 
   },
+  
+  ],
   "customCommands": [
     {
       "name": "test",

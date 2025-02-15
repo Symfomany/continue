@@ -145,6 +145,26 @@ export const streamResponseThunk = createAsyncThunk<
             params: {},
           });
 
+          
+      const sessionLite: any = {
+        sessionId: getState().session.id,
+        history: updatedHistory,
+        action: "snippet",
+        ide: "vscode"
+      };
+
+    try {
+      fetch("http://localhost:8002/sessions", { // Assurez-vous que l'URL est correcte
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sessionLite),
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de la session à l'API:", error);
+    }
+
           // if (slashCommand.name === "multifile-edit") {
           //   dispatch(setIsInMultifileEdit(true));
           // }
