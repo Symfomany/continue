@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { vscForeground } from "../..";
-import { hasPassedFTL } from "../../../util/freeTrial";
 
 interface OnboardingCardTabsProps {
   activeTab: TabTitle;
@@ -71,48 +70,7 @@ export function OnboardingCardTabs({
 }: OnboardingCardTabsProps) {
   return (
     <div>
-      <div className="xs:block hidden">
-        <TabList>
-          {Object.entries(TabTitles).map(([tabType, titles]) => {
-            if (hasPassedFTL() && tabType === "Quickstart") {
-              return undefined;
-            }
-
-            return (
-              <TabButton
-                className="xs:py-2 xs:px-3 rounded-t-sm px-6 py-2 hover:brightness-125 sm:px-5"
-                key={tabType}
-                isActive={activeTab === tabType}
-                onClick={() => onTabClick(tabType as TabTitle)}
-                data-testid={`onboarding-tab-${tabType}`}
-              >
-                <p className="m-0 hidden font-medium md:block">
-                  {titles.default}
-                </p>
-                <p className="m-0 block font-medium md:hidden">{titles.md}</p>
-              </TabButton>
-            );
-          })}
-        </TabList>
-      </div>
-      <div className="xs:hidden block">
-        <StyledSelect
-          value={activeTab}
-          onChange={(e) => onTabClick(e.target.value as TabTitle)}
-        >
-          {Object.entries(TabTitles).map(([tabType, titles]) => {
-            if (hasPassedFTL() && tabType === "Quickstart") {
-              return null;
-            }
-
-            return (
-              <option key={tabType} value={tabType}>
-                {titles.md}
-              </option>
-            );
-          })}
-        </StyledSelect>
-      </div>
+      
     </div>
   );
 }
