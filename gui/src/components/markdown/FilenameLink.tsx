@@ -5,6 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 import { IdeMessengerContext } from "../../context/IdeMessenger";
 import FileIcon from "../FileIcon";
 import { ToolTip } from "../gui/Tooltip";
+import { isJetBrains } from "../../util";
+import { createSession } from "../../redux/thunks/session";
+import { AppDispatch } from "../../redux/store";
+import { useDispatch } from "react-redux";
 
 interface FilenameLinkProps {
   rif: RangeInFile;
@@ -12,6 +16,7 @@ interface FilenameLinkProps {
 
 function FilenameLink({ rif }: FilenameLinkProps) {
   const ideMessenger = useContext(IdeMessengerContext);
+  const dispatch = useDispatch<AppDispatch>();
 
   function onClick() {
     ideMessenger.post("showLines", {
@@ -19,6 +24,16 @@ function FilenameLink({ rif }: FilenameLinkProps) {
       startLine: rif.range.start.line,
       endLine: rif.range.end.line,
     });
+
+    const sessionLite = {
+        action: "showLines",
+        filepath: rif.filepath,
+        startLine: rif.range.start.line,
+        endLine: rif.range.end.line,
+        ide: isJetBrains() ? "Intellij" : "VSCode",
+    };
+      
+          dispatch(createSession({ sessionLite }));
   }
 
   const id = uuidv4();

@@ -2,6 +2,9 @@ import { CommandLineIcon } from "@heroicons/react/24/outline";
 import { useContext } from "react";
 import { lightGray, vscForeground } from "../..";
 import { IdeMessengerContext } from "../../../context/IdeMessenger";
+import { useAppDispatch } from "../../../redux/hooks";
+import { isJetBrains } from "../../../util";
+import { createSession } from "../../../redux/thunks/session";
 
 interface RunInTerminalButtonProps {
   command: string;
@@ -11,9 +14,18 @@ export default function RunInTerminalButton({
   command,
 }: RunInTerminalButtonProps) {
   const ideMessenger = useContext(IdeMessengerContext);
+    const dispatch = useAppDispatch();
 
   function runInTerminal() {
     void ideMessenger.post("runCommand", { command });
+
+    const sessionLite = {
+      action: "runCommand",
+      history: command,
+      ide: isJetBrains() ? "Intellij" : "VSCode",
+    };
+
+    dispatch(createSession({ sessionLite }))
   }
 
   return (

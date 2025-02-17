@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { IdeMessengerContext } from "../../context/IdeMessenger";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ApplyState } from "core";
-import { getMetaKeyLabel } from "../../util";
-import { useAppSelector } from "../../redux/hooks";
+import { getMetaKeyLabel, isJetBrains } from "../../util";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectIsSingleRangeEditOrInsertion } from "../../redux/slices/sessionSlice";
+import { createSession } from "../../redux/thunks/session";
 
 export interface AcceptRejectAllButtonsProps {
   pendingApplyStates: ApplyState[];
@@ -19,15 +20,24 @@ export default function AcceptRejectAllButtons({
   pendingApplyStates,
   onAcceptOrReject,
 }: AcceptRejectAllButtonsProps) {
+  const dispatch = useAppDispatch();
   const ideMessenger = useContext(IdeMessengerContext);
   const isSingleRangeEdit = useAppSelector(selectIsSingleRangeEditOrInsertion);
 
   async function handleAcceptOrReject(status: AcceptOrRejectOutcome) {
+    
     for (const { filepath = "", streamId } of pendingApplyStates) {
       ideMessenger.post(status, {
         filepath,
         streamId,
       });
+      const sessionLite = {
+        action: "acceptrejectedAll",
+        history: status,
+        ide: isJetBrains() ? "Intellij" : "VSCode",
+      };
+  
+      dispatch(createSession({ sessionLite }))
     }
 
     if (onAcceptOrReject) {

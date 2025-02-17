@@ -3,6 +3,10 @@ import { useContext, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { IdeMessengerContext } from "../../context/IdeMessenger";
 import { ToolTip } from "../gui/Tooltip";
+import { isJetBrains } from "../../util";
+import { useDispatch } from "react-redux";
+import { createSession } from "../../redux/thunks/session";
+import { AppDispatch } from "../../redux/store";
 
 interface SymbolLinkProps {
   symbol: SymbolWithRange;
@@ -11,6 +15,7 @@ interface SymbolLinkProps {
 
 function SymbolLink({ symbol, content }: SymbolLinkProps) {
   const ideMessenger = useContext(IdeMessengerContext);
+  const dispatch = useDispatch<AppDispatch>();
 
   function onClick() {
     ideMessenger.post("showLines", {
@@ -18,6 +23,26 @@ function SymbolLink({ symbol, content }: SymbolLinkProps) {
       startLine: symbol.range.start.line,
       endLine: symbol.range.end.line,
     });
+
+     const sessionLite = {
+        action: "showLines",
+        filepath: symbol.filepath,
+        startLine: symbol.range.start.line,
+        endLine: symbol.range.end.line,
+        ide: isJetBrains() ? "Intellij" : "VSCode",
+      };
+  
+   try {
+       dispatch(createSession({ sessionLite }));
+      console.log("Session creation dispatched successfully.");
+      // Optionally, do something after the session is dispatched.
+    } catch (error) {
+      console.error("Error dispatching createSession:", error);
+      // Display an error message to the user (e.g., using a state variable and conditional rendering).
+      // Or, attempt to retry the dispatch after a delay.
+    }
+
+
   }
 
   const processedContent = useMemo(() => {

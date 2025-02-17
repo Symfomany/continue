@@ -1,4 +1,6 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from "@reduxjs/toolkit";
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+
 import miscReducer from "./slices/miscSlice";
 import {
   createMigrate,
@@ -102,5 +104,10 @@ export const store = setupStore();
 export type RootState = ReturnType<typeof rootReducer>;
 
 export type AppDispatch = typeof store.dispatch;
-
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 export const persistor = persistStore(store);

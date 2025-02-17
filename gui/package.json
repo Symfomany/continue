@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
+    "check": "tsc -p ./ --noEmit",
     "tsc:check": "tsc -p ./ --noEmit",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -40,7 +41,6 @@
     "lodash": "^4.17.21",
     "minisearch": "^7.0.2",
     "mustache": "^4.2.0",
-    "onigasm": "^2.2.5",
     "posthog-js": "^1.130.1",
     "prismjs": "^1.29.0",
     "react": "^18.2.0",

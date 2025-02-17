@@ -1,6 +1,6 @@
 import { getLocalStorage, setLocalStorage } from "./localStorage";
 
-export const FREE_TRIAL_LIMIT_REQUESTS = 50;
+export const FREE_TRIAL_LIMIT_REQUESTS = 5000;
 
 export function hasPassedFTL(): boolean {
   return (getLocalStorage("ftc") ?? 0) > FREE_TRIAL_LIMIT_REQUESTS;

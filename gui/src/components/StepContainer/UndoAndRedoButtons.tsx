@@ -7,9 +7,12 @@ import { setCurCheckpointIndex } from "../../redux/slices/sessionSlice";
 import { useContext } from "react";
 import { IdeMessengerContext } from "../../context/IdeMessenger";
 import { useAppSelector } from "../../redux/hooks";
+import { isJetBrains } from "../../util";
+import { createSession } from "../../redux/thunks/session";
+import { AppDispatch } from "../../redux/store";
 
 export default function UndoAndRedoButtons() {
-  const dispatch = useDispatch();
+const dispatch = useDispatch<AppDispatch>();
   const ideMessenger = useContext(IdeMessengerContext);
 
   const history = useAppSelector((store) => store.session.history);
@@ -33,6 +36,16 @@ export default function UndoAndRedoButtons() {
         filepath,
         prevFileContent: cachedFileContent,
       });
+
+      const sessionLite = {
+            action: "overwriteFile",
+            history: type,
+            filepath,
+            prevFileContent: cachedFileContent,
+            ide: isJetBrains() ? "Intellij" : "VSCode",
+          };
+      
+      dispatch(createSession({ sessionLite }))
     }
 
     dispatch(setCurCheckpointIndex(checkpointIndex));

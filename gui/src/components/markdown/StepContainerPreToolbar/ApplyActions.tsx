@@ -2,9 +2,11 @@ import { CheckIcon, PlayIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ApplyState } from "core";
 import { useEffect, useState } from "react";
 import { lightGray, vscForeground } from "../..";
-import { getMetaKeyLabel } from "../../../util";
+import { getMetaKeyLabel, isJetBrains } from "../../../util";
 import Spinner from "../../gui/Spinner";
 import { ToolbarButtonWithTooltip } from "./ToolbarButtonWithTooltip";
+import { useAppDispatch } from "../../../redux/hooks";
+import { createSession } from "../../../redux/thunks/session";
 
 interface ApplyActionsProps {
   applyState?: ApplyState;
@@ -18,6 +20,7 @@ export default function ApplyActions(props: ApplyActionsProps) {
   const [showApplied, setShowApplied] = useState(false);
   const isClosed = props.applyState?.status === "closed";
   const isSuccessful = !hasRejected && props.applyState?.numDiffs === 0;
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isClosed && isSuccessful) {
@@ -31,13 +34,33 @@ export default function ApplyActions(props: ApplyActionsProps) {
 
   function onClickReject() {
     props.onClickReject();
+    const sessionLite = {
+      action: "reject",
+      ide: isJetBrains() ? "Intellij" : "VSCode",
+    };
+    
+    dispatch(createSession({ sessionLite }))
+          
     setHasRejected(true);
   }
 
+  function onClickApplied() {
+    props.onClickApply();
+    const sessionLite = {
+      action: "accept",
+      ide: isJetBrains() ? "Intellij" : "VSCode",
+    };
+    
+    dispatch(createSession({ sessionLite }))
+          
+    setHasRejected(true);
+  }
+
+  
   const applyButton = (text: string) => (
     <button
       className={`flex items-center border-none bg-transparent text-xs text-[${vscForeground}] cursor-pointer outline-none hover:brightness-125`}
-      onClick={props.onClickApply}
+      onClick={onClickApplied}
       style={{ color: lightGray }}
     >
       <div className="flex items-center gap-1 text-gray-400">

@@ -13,13 +13,15 @@ import {
   selectApplyStateByStreamId,
   selectIsInEditMode,
 } from "../../../redux/slices/sessionSlice";
-import { getFontSize } from "../../../util";
+import { getFontSize, isJetBrains } from "../../../util";
 import { childrenToText, isTerminalCodeBlock } from "../utils";
 import ApplyActions from "./ApplyActions";
 import CopyButton from "./CopyButton";
 import FileInfo from "./FileInfo";
 import GeneratingCodeLoader from "./GeneratingCodeLoader";
 import RunInTerminalButton from "./RunInTerminalButton";
+import { useAppDispatch } from "../../../redux/hooks";
+import { createSession } from "../../../redux/thunks/session";
 
 const TopDiv = styled.div`
   outline: 0.5px solid rgba(153, 153, 152);
@@ -57,6 +59,7 @@ export interface StepContainerPreToolbarProps {
 export default function StepContainerPreToolbar(
   props: StepContainerPreToolbarProps,
 ) {
+  const dispatch = useAppDispatch();
   const ideMessenger = useContext(IdeMessengerContext);
   const streamIdRef = useRef<string>(uuidv4());
   const wasGeneratingRef = useRef(props.isGeneratingCodeBlock);
@@ -105,6 +108,18 @@ export default function StepContainerPreToolbar(
       text: codeBlockContent,
       curSelectedModelTitle: defaultModel.title,
     });
+
+    const sessionLite = {
+        action: "applyToFile",
+         streamId: streamIdRef.current,
+        filepath: fileUri,
+        text: codeBlockContent,
+        curSelectedModelTitle: defaultModel.title,
+        ide: isJetBrains() ? "Intellij" : "VSCode",
+      };
+  
+      dispatch(createSession({ sessionLite }))
+
   }
 
   // Handle apply keyboard shortcut
@@ -150,10 +165,18 @@ export default function StepContainerPreToolbar(
       props.relativeFilepath,
       ideMessenger.ide,
     );
+   
     ideMessenger.post("acceptDiff", {
       filepath: fileUri,
       streamId: streamIdRef.current,
     });
+
+    const sessionLite = {
+      action: "acceptDiff",
+      ide: isJetBrains() ? "Intellij" : "VSCode",
+    };
+  
+      dispatch(createSession({ sessionLite }))
   }
 
   async function onClickRejectApply() {
@@ -165,6 +188,13 @@ export default function StepContainerPreToolbar(
       filepath: fileUri,
       streamId: streamIdRef.current,
     });
+
+        const sessionLite = {
+          action: "rejectDiff",
+          ide: isJetBrains() ? "Intellij" : "VSCode",
+        };
+    
+      dispatch(createSession({ sessionLite }))
   }
 
   function onClickExpand() {

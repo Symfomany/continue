@@ -6,17 +6,18 @@ import {
 } from "@heroicons/react/24/outline";
 import { defaultBorderRadius, vscEditorBackground } from "..";
 import { IdeMessengerContext } from "../../context/IdeMessenger";
-import { isJetBrains } from "../../util";
 import { isTerminalCodeBlock, getTerminalCommand } from "./utils";
 import HeaderButtonWithToolTip from "../gui/HeaderButtonWithToolTip";
 import { CopyIconButton } from "../gui/CopyIconButton";
 import { v4 as uuidv4 } from "uuid";
 import { useWebviewListener } from "../../hooks/useWebviewListener";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   selectDefaultModel,
   selectUIConfig,
 } from "../../redux/slices/configSlice";
+import { createSession } from "../../redux/thunks/session";
+import { isJetBrains } from '../../util/index';
 
 interface StepContainerPreActionButtonsProps {
   language: string | null;
@@ -31,6 +32,8 @@ export default function StepContainerPreActionButtons({
   codeBlockIndex,
   children,
 }: StepContainerPreActionButtonsProps) {
+    const dispatch = useAppDispatch();
+  
   const [hovering, setHovering] = useState(false);
   const ideMessenger = useContext(IdeMessengerContext);
   const uiConfig = useAppSelector(selectUIConfig);
@@ -63,6 +66,19 @@ export default function StepContainerPreActionButtons({
       text: codeBlockContent,
       curSelectedModelTitle: defaultModel.title,
     });
+
+
+    const sessionLite = {
+      action: "applyToFile",
+      history: codeBlockContent,
+      streamId: streamIdRef.current,
+      ide: isJetBrains(),
+      text: codeBlockContent,
+      title: defaultModel.title,
+    };
+
+    dispatch(createSession({ sessionLite }))
+    
   }
 
   async function onClickRunTerminal(): Promise<void> {
@@ -115,9 +131,18 @@ export default function StepContainerPreActionButtons({
           <HeaderButtonWithToolTip
             text="Insert at cursor"
             style={{ backgroundColor: vscEditorBackground }}
-            onClick={() =>
-              ideMessenger.post("insertAtCursor", { text: codeBlockContent })
-            }
+            onClick={() =>{
+            
+                  const sessionLite = {
+                      ide: isJetBrains(),
+                      action: "insertcursor",
+                      history: codeBlockContent,
+                    };
+
+                    dispatch(createSession({ sessionLite }))
+
+                    return   ideMessenger.post("insertAtCursor", { text: codeBlockContent })
+            }}
             tooltipPlacement={toolTipPlacement}
           >
             <ArrowLeftEndOnRectangleIcon className="h-4 w-4 text-gray-400" />

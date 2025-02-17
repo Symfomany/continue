@@ -59,10 +59,14 @@ export interface IIdeMessenger {
   ide: IDE;
 }
 
+
 export class IdeMessenger implements IIdeMessenger {
+
   ide: IDE;
 
+
   constructor() {
+
     this.ide = new MessageIde(
       async (messageType, data) => {
         const result = await this.request(messageType, data);
@@ -80,6 +84,8 @@ export class IdeMessenger implements IIdeMessenger {
     data: any,
     messageId: string = uuidv4(),
   ) {
+
+
     if (typeof vscode === "undefined") {
       if (isJetBrains()) {
         if (window.postIntellijMessage === undefined) {
@@ -101,13 +107,12 @@ export class IdeMessenger implements IIdeMessenger {
         return;
       }
     }
-
-    const msg: Message = {
+  
+     const msg: Message = {
       messageId,
       messageType,
       data,
     };
-
     vscode.postMessage(msg);
   }
 

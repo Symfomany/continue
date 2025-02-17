@@ -42,7 +42,7 @@ import { IdeMessengerContext } from "../../context/IdeMessenger";
 import { useTutorialCard } from "../../hooks/useTutorialCard";
 import { useWebviewListener } from "../../hooks/useWebviewListener";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { selectUsePlatform } from "../../redux/selectors";
+import { selectUseHub } from "../../redux/selectors";
 import { selectCurrentToolCall } from "../../redux/selectors/selectCurrentToolCall";
 import { selectDefaultModel } from "../../redux/slices/configSlice";
 import { submitEdit } from "../../redux/slices/editModeState";
@@ -66,6 +66,7 @@ import { streamResponseThunk } from "../../redux/thunks/streamResponse";
 import {
   getFontSize,
   getMetaKeyLabel,
+  isJetBrains,
   isMetaEquivalentKeyPressed,
 } from "../../util";
 import {
@@ -78,6 +79,9 @@ import ConfigErrorIndicator from "./ConfigError";
 import { ToolCallDiv } from "./ToolCallDiv";
 import { ToolCallButtons } from "./ToolCallDiv/ToolCallButtonsDiv";
 import ToolOutput from "./ToolCallDiv/ToolOutput";
+
+import { createSession } from "../../redux/thunks/session";
+
 
 const StopButton = styled.div`
   background-color: ${vscBackground};
@@ -222,7 +226,7 @@ export function Chat() {
     selectIsSingleRangeEditOrInsertion,
   );
   const lastSessionId = useAppSelector((state) => state.session.lastSessionId);
-  const usePlatform = useAppSelector(selectUsePlatform);
+  const useHub = useAppSelector(selectUseHub);
 
   useEffect(() => {
     // Cmd + Backspace to delete current step
@@ -340,6 +344,15 @@ export function Chat() {
       range: codeToEdit[0] as RangeInFileWithContents,
     });
 
+    const sessionLite = {
+      history: prompt,
+      action: "edit/sendPrompt",
+      ide: isJetBrains() ? "Intellij" : "VSCode",
+    };
+
+    dispatch(createSession({ sessionLite }))
+       
+
     dispatch(submitEdit(prompt));
   }
 
@@ -365,7 +378,7 @@ export function Chat() {
 
   useAutoScroll(stepsDivRef, history);
 
-  const showPageHeader = isInEditMode || usePlatform;
+  const showPageHeader = isInEditMode || useHub;
 
   return (
     <>
@@ -382,7 +395,7 @@ export function Chat() {
                 }
               : undefined
           }
-          rightContent={usePlatform && <AssistantSelect />}
+          rightContent={useHub && <AssistantSelect />}
         />
       )}
 
@@ -567,7 +580,7 @@ export function Chat() {
             <>
               {onboardingCard.show && (
                 <div className="mx-2 mt-10">
-                  {usePlatform ? (
+                  {useHub ? (
                     <PlatformOnboardingCard isDialog={false} />
                   ) : (
                     <OnboardingCard isDialog={false} />

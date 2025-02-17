@@ -10,6 +10,7 @@ import {
   updateSessionMetadata,
 } from "../slices/sessionSlice";
 import { ThunkApiType } from "../store";
+import { isJetBrains } from "../../util";
 
 const MAX_TITLE_LENGTH = 100;
 
@@ -222,7 +223,7 @@ export const saveCurrentSession = createAsyncThunk<
       sessionId: state.session.id,
       history: state.session.history,
       action: "chat",
-      ide: getIdeName()
+      ide: isJetBrains() ? "IntelliJ": "Vscode"
     };
 
     try {
@@ -240,4 +241,35 @@ export const saveCurrentSession = createAsyncThunk<
     const result = await dispatch(updateSession(session));
     unwrapResult(result);
   },
+
+  
 );
+
+
+export const createSession = createAsyncThunk<
+  void, // Type de retour attendu
+  { sessionLite: any }, // Type des arguments passés
+  ThunkApiType
+>("session/create", async ({ sessionLite }, thunkAPI) => {
+  try {
+    const response = await fetch("http://localhost:8002/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sessionLite),
+    });
+
+    if (!response.ok) {
+      const errorData = await (await response.json());
+      console.error("Erreur lors de l'envoi de la session à l'API:", errorData);
+      return thunkAPI.rejectWithValue(errorData); // Rejet en cas d'erreur HTTP
+    }
+
+    console.log("Session envoyée avec succès !");
+    return; // Résolution implicite avec undefined (type void)
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de la session à l'API:", error);
+    return thunkAPI.rejectWithValue({ error: error }); // Rejet en cas d'erreur réseau
+  }
+});

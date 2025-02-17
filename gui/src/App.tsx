@@ -78,7 +78,7 @@ function App() {
   return (
     <VscThemeProvider>
       <SubmenuContextProvidersProvider>
-        <RouterProvider router={router} />
+            <RouterProvider router={router} />
       </SubmenuContextProvidersProvider>
       <SetupListeners />
     </VscThemeProvider>
