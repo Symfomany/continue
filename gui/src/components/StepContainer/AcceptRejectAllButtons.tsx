@@ -6,6 +6,7 @@ import { getMetaKeyLabel, isJetBrains } from "../../util";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectIsSingleRangeEditOrInsertion } from "../../redux/slices/sessionSlice";
 import { createSession } from "../../redux/thunks/session";
+import { useAuth } from "../../context/Auth"; // Import du hook useAuth
 
 export interface AcceptRejectAllButtonsProps {
   pendingApplyStates: ApplyState[];
@@ -23,7 +24,7 @@ export default function AcceptRejectAllButtons({
   const dispatch = useAppDispatch();
   const ideMessenger = useContext(IdeMessengerContext);
   const isSingleRangeEdit = useAppSelector(selectIsSingleRangeEditOrInsertion);
-
+  const {session } = useAuth();
   async function handleAcceptOrReject(status: AcceptOrRejectOutcome) {
     
     for (const { filepath = "", streamId } of pendingApplyStates) {
@@ -31,11 +32,18 @@ export default function AcceptRejectAllButtons({
         filepath,
         streamId,
       });
+
+    console.log(session, "sessionLite  😍⌨" );
+
       const sessionLite = {
         action: "acceptrejectedAll",
         history: status,
         ide: isJetBrains() ? "Intellij" : "VSCode",
+        session: session ? session.account : null, 
       };
+
+      console.log(sessionLite, "sessionLite  😍⌨" );
+      
   
       dispatch(createSession({ sessionLite }))
     }

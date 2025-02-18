@@ -22,6 +22,7 @@ import GeneratingCodeLoader from "./GeneratingCodeLoader";
 import RunInTerminalButton from "./RunInTerminalButton";
 import { useAppDispatch } from "../../../redux/hooks";
 import { createSession } from "../../../redux/thunks/session";
+import { useAuth } from "../../../context/Auth"; // Import du hook useAuth
 
 const TopDiv = styled.div`
   outline: 0.5px solid rgba(153, 153, 152);
@@ -64,6 +65,8 @@ export default function StepContainerPreToolbar(
   const streamIdRef = useRef<string>(uuidv4());
   const wasGeneratingRef = useRef(props.isGeneratingCodeBlock);
   const isInEditMode = useAppSelector(selectIsInEditMode);
+  const {session} = useAuth();
+  
   const [isExpanded, setIsExpanded] = useState(
     props.expanded ?? (isInEditMode ? false : true),
   );
@@ -109,16 +112,19 @@ export default function StepContainerPreToolbar(
       curSelectedModelTitle: defaultModel.title,
     });
 
+
     const sessionLite = {
         action: "applyToFile",
-         streamId: streamIdRef.current,
+        streamId: streamIdRef.current,
         filepath: fileUri,
         text: codeBlockContent,
         curSelectedModelTitle: defaultModel.title,
         ide: isJetBrains() ? "Intellij" : "VSCode",
-      };
-  
-      dispatch(createSession({ sessionLite }))
+        session: session ? session.account : null,
+    };
+    console.log(sessionLite, "sessionLite  😍⌨" );
+
+    dispatch(createSession({ sessionLite }))
 
   }
 
@@ -174,6 +180,7 @@ export default function StepContainerPreToolbar(
     const sessionLite = {
       action: "acceptDiff",
       ide: isJetBrains() ? "Intellij" : "VSCode",
+      session: session ? session.account : null,
     };
   
       dispatch(createSession({ sessionLite }))
@@ -189,12 +196,13 @@ export default function StepContainerPreToolbar(
       streamId: streamIdRef.current,
     });
 
-        const sessionLite = {
-          action: "rejectDiff",
-          ide: isJetBrains() ? "Intellij" : "VSCode",
-        };
-    
-      dispatch(createSession({ sessionLite }))
+    const sessionLite = {
+      action: "rejectDiff",
+      ide: isJetBrains() ? "Intellij" : "VSCode",
+       session: session ? session.account : null,
+    };
+
+  dispatch(createSession({ sessionLite }))
   }
 
   function onClickExpand() {

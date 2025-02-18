@@ -563,7 +563,7 @@ function TipTapEditor(props: TipTapEditorProps) {
 
     return historyLength === 0
       ? "Demander avec contexte avec '@'"
-      : "Votre code";
+      : "Quelle est votre demande ?";
   }
 
   useEffect(() => {

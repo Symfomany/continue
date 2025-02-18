@@ -19,11 +19,11 @@ export default function MainTab({
   const auth = useAuth();
 
   function onGetStarted() {
-    auth.login(true).then((success) => {
-      if (success) {
-        onboardingCard.close(isDialog);
-      }
-    });
+    // auth.login(true).then((success) => {
+    //   if (success) {
+    //     onboardingCard.close(isDialog);
+    //   }
+    // });
   }
 
   function openPastFreeTrialOnboarding() {

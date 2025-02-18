@@ -10,9 +10,11 @@ import { useAppSelector } from "../../redux/hooks";
 import { isJetBrains } from "../../util";
 import { createSession } from "../../redux/thunks/session";
 import { AppDispatch } from "../../redux/store";
+import { useAuth } from "../../context/Auth"; // Import du hook useAuth
 
 export default function UndoAndRedoButtons() {
 const dispatch = useDispatch<AppDispatch>();
+ const {session} = useAuth();
   const ideMessenger = useContext(IdeMessengerContext);
 
   const history = useAppSelector((store) => store.session.history);
@@ -43,8 +45,10 @@ const dispatch = useDispatch<AppDispatch>();
             filepath,
             prevFileContent: cachedFileContent,
             ide: isJetBrains() ? "Intellij" : "VSCode",
+            session: session ? session.account : null,
           };
       
+      console.log(sessionLite, "sessionLite  😍⌨" );
       dispatch(createSession({ sessionLite }))
     }
 

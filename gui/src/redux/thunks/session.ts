@@ -217,26 +217,35 @@ export const saveCurrentSession = createAsyncThunk<
       history: state.session.history,
     };
 
-    const getIdeName = () => process.env.VSCODE_CWD ? "VSCode" : "IntelliJ";
-
-    const sessionLite: any = {
+    const ideName = isJetBrains() ? "IntelliJ" : "VSCode";
+    const sessionLite = {
       sessionId: state.session.id,
       history: state.session.history,
+      isStreaming: state.session.isStreaming,
+      title: state.session.title,
       action: "chat",
-      ide: isJetBrains() ? "IntelliJ": "Vscode"
+      mode: state.session.mode,
+      ide: ideName,
     };
 
     try {
-      fetch("http://localhost:8002/sessions", { // Assurez-vous que l'URL est correcte
+      const response = await fetch("http://localhost:8002/sessions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(sessionLite),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData)); // Throw a more informative error
+      }
     } catch (error) {
-      console.error("Erreur lors de l'envoi de la session à l'API:", error);
+      console.error("Error saving session:", error); //More concise error message
+      //Consider adding error handling in the calling function using try...catch, or thunkAPI.rejectWithValue
     }
+     
 
     const result = await dispatch(updateSession(session));
     unwrapResult(result);

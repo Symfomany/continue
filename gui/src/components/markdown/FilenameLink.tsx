@@ -9,6 +9,7 @@ import { isJetBrains } from "../../util";
 import { createSession } from "../../redux/thunks/session";
 import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
+import { useAuth } from "../../context/Auth"; // Import du hook useAuth
 
 interface FilenameLinkProps {
   rif: RangeInFile;
@@ -17,7 +18,8 @@ interface FilenameLinkProps {
 function FilenameLink({ rif }: FilenameLinkProps) {
   const ideMessenger = useContext(IdeMessengerContext);
   const dispatch = useDispatch<AppDispatch>();
-
+  const {session} = useAuth();
+  
   function onClick() {
     ideMessenger.post("showLines", {
       filepath: rif.filepath,
@@ -31,9 +33,10 @@ function FilenameLink({ rif }: FilenameLinkProps) {
         startLine: rif.range.start.line,
         endLine: rif.range.end.line,
         ide: isJetBrains() ? "Intellij" : "VSCode",
+        session: session ? session.account : null, 
     };
       
-          dispatch(createSession({ sessionLite }));
+      dispatch(createSession({ sessionLite }));
   }
 
   const id = uuidv4();

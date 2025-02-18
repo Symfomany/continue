@@ -24,7 +24,7 @@ import {
 interface AuthContextType {
   session: ControlPlaneSessionInfo | undefined;
   logout: () => void;
-  login: (useOnboarding: boolean) => Promise<boolean>;
+  login: (useOnboarding: boolean, email: string, keyApi: string) => Promise<boolean>; // Ajout des types ici et paramètres
   selectedProfile: ProfileDescription | null;
   profiles: ProfileDescription[];
   controlServerBetaEnabled: boolean;
@@ -69,26 +69,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return profiles.find((p) => p.id === selectedProfileId) ?? null;
   }, [profiles, selectedProfileId]);
 
-  const login: AuthContextType["login"] = (useOnboarding: boolean) => {
+   const login: AuthContextType["login"] = (useOnboarding: boolean, email: string, keyApi: string) => {
     return new Promise((resolve) => {
-      ideMessenger
-        .request("getControlPlaneSessionInfo", {
-          silent: false,
-          useOnboarding,
+      
+        fetch("http://localhost:8002/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, keyApi }), // Adapter les noms de champs si nécessaire
         })
-        .then((result) => {
-          if (result.status === "error") {
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.ok) {
+                const session = data.user;
+                session.account = {...data.user}
+                session.accessToken = data.user.api_key
+                session.label = data.user.prenom + " " + data.user.nom
+                // ideMessenger.request("getControlPlaneSessionInfo", {
+                //   silent: false,
+                //   useOnboarding: true,
+                // })
+              
+                  setSession(session);
+                  resolve(true);
+            } else {
+              console.error("Login failed:", data.message);
+              resolve(false);
+            }
+            })
+          .catch((error) => {
+            console.error("Login error:", error);
             resolve(false);
-            return;
-          }
+          });
+          })
+      }
 
-          const session = result.content;
-          setSession(session);
-
-          resolve(true);
-        });
-    });
-  };
 
   const logout = () => {
     dispatch(setShowDialog(true));
@@ -96,9 +112,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setDialogMessage(
         <ConfirmationDialog
           confirmText="Yes, log out"
-          text="Are you sure you want to log out of Continue?"
+          text="Are you sure you want to log out of Continue by Enedis?"
           onConfirm={() => {
             ideMessenger.post("logoutOfControlPlane", undefined);
+           
           }}
           onCancel={() => {
             dispatch(setDialogMessage(undefined));

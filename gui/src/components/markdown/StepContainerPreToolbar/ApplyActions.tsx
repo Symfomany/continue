@@ -7,6 +7,7 @@ import Spinner from "../../gui/Spinner";
 import { ToolbarButtonWithTooltip } from "./ToolbarButtonWithTooltip";
 import { useAppDispatch } from "../../../redux/hooks";
 import { createSession } from "../../../redux/thunks/session";
+import { useAuth } from "../../../context/Auth"
 
 interface ApplyActionsProps {
   applyState?: ApplyState;
@@ -19,6 +20,7 @@ export default function ApplyActions(props: ApplyActionsProps) {
   const [hasRejected, setHasRejected] = useState(false);
   const [showApplied, setShowApplied] = useState(false);
   const isClosed = props.applyState?.status === "closed";
+  const {session} = useAuth()
   const isSuccessful = !hasRejected && props.applyState?.numDiffs === 0;
   const dispatch = useAppDispatch();
 
@@ -36,6 +38,7 @@ export default function ApplyActions(props: ApplyActionsProps) {
     props.onClickReject();
     const sessionLite = {
       action: "reject",
+      session: session ? session.account : null,
       ide: isJetBrains() ? "Intellij" : "VSCode",
     };
     
@@ -48,9 +51,11 @@ export default function ApplyActions(props: ApplyActionsProps) {
     props.onClickApply();
     const sessionLite = {
       action: "accept",
+      session: session ? session.account : null,
       ide: isJetBrains() ? "Intellij" : "VSCode",
     };
-    
+    console.log(sessionLite, "sessionLite  😍⌨" );
+
     dispatch(createSession({ sessionLite }))
           
     setHasRejected(true);

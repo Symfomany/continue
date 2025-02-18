@@ -79,7 +79,7 @@ import ConfigErrorIndicator from "./ConfigError";
 import { ToolCallDiv } from "./ToolCallDiv";
 import { ToolCallButtons } from "./ToolCallDiv/ToolCallButtonsDiv";
 import ToolOutput from "./ToolCallDiv/ToolOutput";
-
+import { useAuth } from "../../context/Auth"
 import { createSession } from "../../redux/thunks/session";
 
 
@@ -227,6 +227,7 @@ export function Chat() {
   );
   const lastSessionId = useAppSelector((state) => state.session.lastSessionId);
   const useHub = useAppSelector(selectUseHub);
+  const auth = useAuth()
 
   useEffect(() => {
     // Cmd + Backspace to delete current step
@@ -346,6 +347,7 @@ export function Chat() {
 
     const sessionLite = {
       history: prompt,
+      session: auth.session,
       action: "edit/sendPrompt",
       ide: isJetBrains() ? "Intellij" : "VSCode",
     };

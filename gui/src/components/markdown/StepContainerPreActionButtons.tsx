@@ -16,6 +16,7 @@ import {
   selectDefaultModel,
   selectUIConfig,
 } from "../../redux/slices/configSlice";
+import { useAuth } from "../../context/Auth"
 import { createSession } from "../../redux/thunks/session";
 import { isJetBrains } from '../../util/index';
 
@@ -54,7 +55,7 @@ export default function StepContainerPreActionButtons({
   if (streamIdRef.current === null) {
     streamIdRef.current = uuidv4();
   }
-
+  const {session} = useAuth()
   const defaultModel = useAppSelector(selectDefaultModel);
 
   function onClickApply() {
@@ -68,14 +69,18 @@ export default function StepContainerPreActionButtons({
     });
 
 
+    
+
     const sessionLite = {
       action: "applyToFile",
+      session: session ? session.account : null,
       history: codeBlockContent,
       streamId: streamIdRef.current,
       ide: isJetBrains(),
       text: codeBlockContent,
       title: defaultModel.title,
     };
+    console.log(sessionLite, "sessionLite  😍⌨" );
 
     dispatch(createSession({ sessionLite }))
     
@@ -137,6 +142,7 @@ export default function StepContainerPreActionButtons({
                       ide: isJetBrains(),
                       action: "insertcursor",
                       history: codeBlockContent,
+                      session: session ? session.account : null,
                     };
 
                     dispatch(createSession({ sessionLite }))
