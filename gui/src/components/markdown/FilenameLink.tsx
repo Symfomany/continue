@@ -10,6 +10,7 @@ import { createSession } from "../../redux/thunks/session";
 import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { useAuth } from "../../context/Auth"; // Import du hook useAuth
+import { usePostHog } from "posthog-js/react";
 
 interface FilenameLinkProps {
   rif: RangeInFile;
@@ -19,6 +20,7 @@ function FilenameLink({ rif }: FilenameLinkProps) {
   const ideMessenger = useContext(IdeMessengerContext);
   const dispatch = useDispatch<AppDispatch>();
   const {session} = useAuth();
+  const posthog = usePostHog();
   
   function onClick() {
     ideMessenger.post("showLines", {
@@ -37,6 +39,8 @@ function FilenameLink({ rif }: FilenameLinkProps) {
     };
       
       dispatch(createSession({ sessionLite }));
+
+       posthog.capture("showLines", sessionLite);
   }
 
   const id = uuidv4();

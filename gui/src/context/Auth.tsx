@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setLastControlServerBetaEnabledStatus } from "../redux/slices/miscSlice";
 import { setDialogMessage, setShowDialog } from "../redux/slices/uiSlice";
 import { IdeMessengerContext } from "./IdeMessenger";
+
 import {
   updateOrgsThunk,
   updateProfilesThunk,
@@ -92,6 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 // })
               
                   setSession(session);
+                  
                   resolve(true);
             } else {
               console.error("Login failed:", data.message);

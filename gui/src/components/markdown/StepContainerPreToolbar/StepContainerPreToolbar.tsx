@@ -23,6 +23,7 @@ import RunInTerminalButton from "./RunInTerminalButton";
 import { useAppDispatch } from "../../../redux/hooks";
 import { createSession } from "../../../redux/thunks/session";
 import { useAuth } from "../../../context/Auth"; // Import du hook useAuth
+import { usePostHog } from "posthog-js/react";
 
 const TopDiv = styled.div`
   outline: 0.5px solid rgba(153, 153, 152);
@@ -66,6 +67,8 @@ export default function StepContainerPreToolbar(
   const wasGeneratingRef = useRef(props.isGeneratingCodeBlock);
   const isInEditMode = useAppSelector(selectIsInEditMode);
   const {session} = useAuth();
+  const posthog = usePostHog();
+
   
   const [isExpanded, setIsExpanded] = useState(
     props.expanded ?? (isInEditMode ? false : true),
@@ -124,7 +127,10 @@ export default function StepContainerPreToolbar(
     };
     console.log(sessionLite, "sessionLite  😍⌨" );
 
+
     dispatch(createSession({ sessionLite }))
+    posthog.capture("applyToFile", sessionLite);
+
 
   }
 
@@ -184,6 +190,8 @@ export default function StepContainerPreToolbar(
     };
   
       dispatch(createSession({ sessionLite }))
+      posthog.capture("acceptDiff", sessionLite);
+
   }
 
   async function onClickRejectApply() {
@@ -195,14 +203,15 @@ export default function StepContainerPreToolbar(
       filepath: fileUri,
       streamId: streamIdRef.current,
     });
-
     const sessionLite = {
       action: "rejectDiff",
       ide: isJetBrains() ? "Intellij" : "VSCode",
        session: session ? session.account : null,
     };
 
-  dispatch(createSession({ sessionLite }))
+    dispatch(createSession({ sessionLite }))
+
+     posthog.capture("rejectDiff", sessionLite);
   }
 
   function onClickExpand() {

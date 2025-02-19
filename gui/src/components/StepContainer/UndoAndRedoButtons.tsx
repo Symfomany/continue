@@ -11,12 +11,13 @@ import { isJetBrains } from "../../util";
 import { createSession } from "../../redux/thunks/session";
 import { AppDispatch } from "../../redux/store";
 import { useAuth } from "../../context/Auth"; // Import du hook useAuth
+import { usePostHog } from "posthog-js/react";
 
 export default function UndoAndRedoButtons() {
 const dispatch = useDispatch<AppDispatch>();
  const {session} = useAuth();
   const ideMessenger = useContext(IdeMessengerContext);
-
+  const posthog = usePostHog();
   const history = useAppSelector((store) => store.session.history);
 
   const curCheckpointIndex = useAppSelector(
@@ -50,6 +51,7 @@ const dispatch = useDispatch<AppDispatch>();
       
       console.log(sessionLite, "sessionLite  😍⌨" );
       dispatch(createSession({ sessionLite }))
+      posthog.capture("overwriteFile", sessionLite);
     }
 
     dispatch(setCurCheckpointIndex(checkpointIndex));

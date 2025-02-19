@@ -19,6 +19,7 @@ import {
 import { useAuth } from "../../context/Auth"
 import { createSession } from "../../redux/thunks/session";
 import { isJetBrains } from '../../util/index';
+import { usePostHog } from "posthog-js/react";
 
 interface StepContainerPreActionButtonsProps {
   language: string | null;
@@ -39,6 +40,7 @@ export default function StepContainerPreActionButtons({
   const ideMessenger = useContext(IdeMessengerContext);
   const uiConfig = useAppSelector(selectUIConfig);
   const streamIdRef = useRef<string | null>(null);
+  const posthog = usePostHog();
   const nextCodeBlockIndex = useAppSelector(
     (state) => state.session.codeBlockApplyStates.curIndex,
   );
@@ -83,6 +85,7 @@ export default function StepContainerPreActionButtons({
     console.log(sessionLite, "sessionLite  😍⌨" );
 
     dispatch(createSession({ sessionLite }))
+    posthog.capture("applyToFile", sessionLite);
     
   }
 
@@ -146,6 +149,7 @@ export default function StepContainerPreActionButtons({
                     };
 
                     dispatch(createSession({ sessionLite }))
+                    posthog.capture("insertcursor", sessionLite);
 
                     return   ideMessenger.post("insertAtCursor", { text: codeBlockContent })
             }}

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectIsSingleRangeEditOrInsertion } from "../../redux/slices/sessionSlice";
 import { createSession } from "../../redux/thunks/session";
 import { useAuth } from "../../context/Auth"; // Import du hook useAuth
+import { usePostHog } from "posthog-js/react";
 
 export interface AcceptRejectAllButtonsProps {
   pendingApplyStates: ApplyState[];
@@ -25,6 +26,7 @@ export default function AcceptRejectAllButtons({
   const ideMessenger = useContext(IdeMessengerContext);
   const isSingleRangeEdit = useAppSelector(selectIsSingleRangeEditOrInsertion);
   const {session } = useAuth();
+  const posthog = usePostHog();
   async function handleAcceptOrReject(status: AcceptOrRejectOutcome) {
     
     for (const { filepath = "", streamId } of pendingApplyStates) {
@@ -33,19 +35,22 @@ export default function AcceptRejectAllButtons({
         streamId,
       });
 
-    console.log(session, "sessionLite  😍⌨" );
+      console.log(filepath, "filepath  😍⌨" );
 
       const sessionLite = {
-        action: "acceptrejectedAll",
+        action: "acceptOrRejectedAll",
+        filepath,
         history: status,
         ide: isJetBrains() ? "Intellij" : "VSCode",
         session: session ? session.account : null, 
       };
 
-      console.log(sessionLite, "sessionLite  😍⌨" );
       
   
       dispatch(createSession({ sessionLite }))
+
+      posthog.capture("acceptOrRejectedAll", sessionLite);
+
     }
 
     if (onAcceptOrReject) {

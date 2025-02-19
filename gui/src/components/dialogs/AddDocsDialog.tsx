@@ -144,6 +144,7 @@ function AddDocsDialog() {
     ideMessenger.post("context/addDocs", siteIndexingConfig);
 
     posthog.capture("add_docs_gui", { url: startUrl });
+    
 
     // Optimistic status update
     dispatch(

@@ -8,6 +8,7 @@ import { ToolbarButtonWithTooltip } from "./ToolbarButtonWithTooltip";
 import { useAppDispatch } from "../../../redux/hooks";
 import { createSession } from "../../../redux/thunks/session";
 import { useAuth } from "../../../context/Auth"
+import { usePostHog } from "posthog-js/react";
 
 interface ApplyActionsProps {
   applyState?: ApplyState;
@@ -21,6 +22,8 @@ export default function ApplyActions(props: ApplyActionsProps) {
   const [showApplied, setShowApplied] = useState(false);
   const isClosed = props.applyState?.status === "closed";
   const {session} = useAuth()
+  const posthog = usePostHog();
+  
   const isSuccessful = !hasRejected && props.applyState?.numDiffs === 0;
   const dispatch = useAppDispatch();
 
@@ -43,10 +46,13 @@ export default function ApplyActions(props: ApplyActionsProps) {
     };
     
     dispatch(createSession({ sessionLite }))
+
+    posthog.capture("reject", sessionLite);
           
     setHasRejected(true);
   }
 
+  
   function onClickApplied() {
     props.onClickApply();
     const sessionLite = {
@@ -57,6 +63,9 @@ export default function ApplyActions(props: ApplyActionsProps) {
     console.log(sessionLite, "sessionLite  😍⌨" );
 
     dispatch(createSession({ sessionLite }))
+
+    posthog.capture("accept", sessionLite);
+
           
     setHasRejected(true);
   }

@@ -11,6 +11,9 @@ import {
 } from "../slices/sessionSlice";
 import { ThunkApiType } from "../store";
 import { isJetBrains } from "../../util";
+import posthog from "posthog-js";
+
+const apiUrl = "http://localhost:8002";
 
 const MAX_TITLE_LENGTH = 100;
 
@@ -218,9 +221,15 @@ export const saveCurrentSession = createAsyncThunk<
     };
 
     const ideName = isJetBrains() ? "IntelliJ" : "VSCode";
+    
+    /**
+     * Creates a lightweight version of the session object for sending to the API and analytics.
+     *  Only includes essential data to reduce payload size.
+     */
     const sessionLite = {
       sessionId: state.session.id,
       history: state.session.history,
+      message:  state.session.history[0],
       isStreaming: state.session.isStreaming,
       title: state.session.title,
       action: "chat",
@@ -229,7 +238,7 @@ export const saveCurrentSession = createAsyncThunk<
     };
 
     try {
-      const response = await fetch("http://localhost:8002/sessions", {
+      fetch(apiUrl + "/sessions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -237,10 +246,7 @@ export const saveCurrentSession = createAsyncThunk<
         body: JSON.stringify(sessionLite),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(JSON.stringify(errorData)); // Throw a more informative error
-      }
+      posthog.capture("chat", sessionLite);
     } catch (error) {
       console.error("Error saving session:", error); //More concise error message
       //Consider adding error handling in the calling function using try...catch, or thunkAPI.rejectWithValue
@@ -261,7 +267,7 @@ export const createSession = createAsyncThunk<
   ThunkApiType
 >("session/create", async ({ sessionLite }, thunkAPI) => {
   try {
-    const response = await fetch("http://localhost:8002/sessions", {
+    fetch(apiUrl + "/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -269,16 +275,9 @@ export const createSession = createAsyncThunk<
       body: JSON.stringify(sessionLite),
     });
 
-    if (!response.ok) {
-      const errorData = await (await response.json());
-      console.error("Erreur lors de l'envoi de la session à l'API:", errorData);
-      return thunkAPI.rejectWithValue(errorData); // Rejet en cas d'erreur HTTP
-    }
-
-    console.log("Session envoyée avec succès !");
     return; // Résolution implicite avec undefined (type void)
   } catch (error) {
     console.error("Erreur lors de l'envoi de la session à l'API:", error);
-    return thunkAPI.rejectWithValue({ error: error }); // Rejet en cas d'erreur réseau
+    // return thunkAPI.rejectWithValue({ error: error }); // Rejet en cas d'erreur réseau
   }
 });
