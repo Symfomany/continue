@@ -13,6 +13,14 @@ interface SymbolLinkProps {
   content: string;
 }
 
+/**
+ * Renders a clickable link that displays a symbol's content and, when clicked, navigates the IDE to the symbol's location.
+ *
+ * @param {SymbolLinkProps} props - The component's props.
+ * @param {SymbolWithRange} props.symbol - The symbol to link to, containing its location and content.
+ * @param {string} props.content - The display text for the link, typically shorter than the full symbol content.
+ * @returns {JSX.Element} A span element containing the clickable link and a tooltip displaying the full symbol content.
+ */
 function SymbolLink({ symbol, content }: SymbolLinkProps) {
   const ideMessenger = useContext(IdeMessengerContext);
   const dispatch = useDispatch<AppDispatch>();

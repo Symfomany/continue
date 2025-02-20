@@ -59,7 +59,6 @@ export default function EditActions({ index, item }: EditActionsProps) {
             pendingApplyStates={pendingApplyStates}
             onAcceptOrReject={async (outcome) => {
               if (outcome === "acceptDiff") {
-                console.log("laaaaa!!!!  😍⌨");
                 await dispatch(
                   loadLastSession({
                     saveCurrentSession: false,

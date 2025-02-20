@@ -19,6 +19,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { useAuth } from "../../context/Auth";
+
 import styled from "styled-components";
 import {
   defaultBorderRadius,
@@ -54,7 +56,7 @@ import {
   loadSession,
   saveCurrentSession,
 } from "../../redux/thunks/session";
-const {session } = useAuth();
+
 
 import {
   getFontSize,
@@ -78,7 +80,6 @@ import {
 } from "./handleMetaKeyIssues";
 import { ComboBoxItem } from "./types";
 import { getFileInfo } from "../../util/detectLanguage";
-import { useAuth } from "../../context/Auth";
 
 const InputBoxDiv = styled.div<{}>`
   resize: none;
@@ -202,6 +203,8 @@ function TipTapEditor(props: TipTapEditorProps) {
 
   const isOSREnabled = useIsOSREnabled();
 
+  const { session } = useAuth();
+  
   const enterSubmenu = async (editor: Editor, providerId: string) => {
     const contents = editor.getText();
     const indexOfAt = contents.lastIndexOf("@");
