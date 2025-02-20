@@ -71,8 +71,6 @@ export default function StepContainerPreActionButtons({
     });
 
 
-    
-
     const sessionLite = {
       action: "applyToFile",
       session: session ? session.account : null,
@@ -82,7 +80,6 @@ export default function StepContainerPreActionButtons({
       text: codeBlockContent,
       title: defaultModel.title,
     };
-    console.log(sessionLite, "sessionLite  😍⌨" );
 
     dispatch(createSession({ sessionLite }))
     posthog.capture("applyToFile", sessionLite);

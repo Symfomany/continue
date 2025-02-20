@@ -11,6 +11,7 @@ import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { useAuth } from "../../context/Auth"; // Import du hook useAuth
 import { usePostHog } from "posthog-js/react";
+import { getFileInfo } from "../../util/detectLanguage";
 
 interface FilenameLinkProps {
   rif: RangeInFile;
@@ -29,8 +30,11 @@ function FilenameLink({ rif }: FilenameLinkProps) {
       endLine: rif.range.end.line,
     });
 
+    const fileInfo = getFileInfo(rif.filepath);
+    
     const sessionLite = {
         action: "showLines",
+        fileInfo,
         filepath: rif.filepath,
         startLine: rif.range.start.line,
         endLine: rif.range.end.line,

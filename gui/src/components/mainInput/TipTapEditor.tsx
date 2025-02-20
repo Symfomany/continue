@@ -49,10 +49,13 @@ import {
 } from "../../redux/slices/sessionSlice";
 import { exitEditMode } from "../../redux/thunks";
 import {
+  createSession,
   loadLastSession,
   loadSession,
   saveCurrentSession,
 } from "../../redux/thunks/session";
+const {session } = useAuth();
+
 import {
   getFontSize,
   isJetBrains,
@@ -74,6 +77,8 @@ import {
   handleVSCMetaKeyIssues,
 } from "./handleMetaKeyIssues";
 import { ComboBoxItem } from "./types";
+import { getFileInfo } from "../../util/detectLanguage";
+import { useAuth } from "../../context/Auth";
 
 const InputBoxDiv = styled.div<{}>`
   resize: none;
@@ -500,6 +505,19 @@ function TipTapEditor(props: TipTapEditorProps) {
             editor.chain().focus().insertContentAt(range, "").run();
             const filepath = props.id;
             const contents = await ideMessenger.ide.readFile(filepath);
+            const fileInfo = getFileInfo(filepath);
+            
+            let sessionLite = {
+              action: "addCodeToEdit",
+              filepath,
+              text: contents,
+              fileInfo,
+              ide: isJetBrains() ? "Intellij" : "VSCode",
+              session: session ? session.account : null, 
+            }
+            posthog.capture("addCodeToEdit", sessionLite);
+
+            dispatch(createSession({ sessionLite }));
             dispatch(
               addCodeToEdit({
                 filepath,
@@ -871,6 +889,7 @@ function TipTapEditor(props: TipTapEditorProps) {
       if (!props.isMainInput || !data.sessionId) {
         return;
       }
+      console.log("laaa !!! ", data.sessionId);
       await dispatch(
         loadSession({
           sessionId: data.sessionId,

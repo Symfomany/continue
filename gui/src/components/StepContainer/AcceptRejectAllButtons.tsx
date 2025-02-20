@@ -8,6 +8,7 @@ import { selectIsSingleRangeEditOrInsertion } from "../../redux/slices/sessionSl
 import { createSession } from "../../redux/thunks/session";
 import { useAuth } from "../../context/Auth"; // Import du hook useAuth
 import { usePostHog } from "posthog-js/react";
+import { getFileInfo } from "../../util/detectLanguage";
 
 export interface AcceptRejectAllButtonsProps {
   pendingApplyStates: ApplyState[];
@@ -35,11 +36,15 @@ export default function AcceptRejectAllButtons({
         streamId,
       });
 
-      console.log(filepath, "filepath  😍⌨" );
+      
+      // Exemple d'utilisation :
+      const fileInfo = getFileInfo(filepath);
+      // Sortie: { filename: 'ContinueInputBox.tsx', language: 'TypeScript' }
 
       const sessionLite = {
         action: "acceptOrRejectedAll",
         filepath,
+        fileInfo,
         history: status,
         ide: isJetBrains() ? "Intellij" : "VSCode",
         session: session ? session.account : null, 

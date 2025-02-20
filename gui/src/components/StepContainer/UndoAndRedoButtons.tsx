@@ -12,6 +12,7 @@ import { createSession } from "../../redux/thunks/session";
 import { AppDispatch } from "../../redux/store";
 import { useAuth } from "../../context/Auth"; // Import du hook useAuth
 import { usePostHog } from "posthog-js/react";
+import { getFileInfo } from "../../util/detectLanguage";
 
 export default function UndoAndRedoButtons() {
 const dispatch = useDispatch<AppDispatch>();
@@ -40,16 +41,18 @@ const dispatch = useDispatch<AppDispatch>();
         prevFileContent: cachedFileContent,
       });
 
+      const fileInfo = getFileInfo(filepath);
+      
       const sessionLite = {
             action: "overwriteFile",
-            history: type,
+            type,
             filepath,
+            fileInfo,
             prevFileContent: cachedFileContent,
             ide: isJetBrains() ? "Intellij" : "VSCode",
             session: session ? session.account : null,
           };
       
-      console.log(sessionLite, "sessionLite  😍⌨" );
       dispatch(createSession({ sessionLite }))
       posthog.capture("overwriteFile", sessionLite);
     }

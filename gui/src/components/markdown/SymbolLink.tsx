@@ -24,6 +24,7 @@ function SymbolLink({ symbol, content }: SymbolLinkProps) {
       endLine: symbol.range.end.line,
     });
 
+
      const sessionLite = {
         action: "showLines",
         filepath: symbol.filepath,

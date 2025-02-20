@@ -222,10 +222,7 @@ export const saveCurrentSession = createAsyncThunk<
 
     const ideName = isJetBrains() ? "IntelliJ" : "VSCode";
     
-    /**
-     * Creates a lightweight version of the session object for sending to the API and analytics.
-     *  Only includes essential data to reduce payload size.
-     */
+
     const sessionLite = {
       sessionId: state.session.id,
       history: state.session.history,
@@ -236,17 +233,17 @@ export const saveCurrentSession = createAsyncThunk<
       mode: state.session.mode,
       ide: ideName,
     };
-
     try {
+      let sessionLiteUpgraded = {...sessionLite, created: new Date().getTime()}
       fetch(apiUrl + "/sessions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(sessionLite),
+        body: JSON.stringify(sessionLiteUpgraded),
       });
 
-      posthog.capture("chat", sessionLite);
+      posthog.capture("chat", sessionLiteUpgraded);
     } catch (error) {
       console.error("Error saving session:", error); //More concise error message
       //Consider adding error handling in the calling function using try...catch, or thunkAPI.rejectWithValue
@@ -267,12 +264,13 @@ export const createSession = createAsyncThunk<
   ThunkApiType
 >("session/create", async ({ sessionLite }, thunkAPI) => {
   try {
+    let sessionLiteUpgraded = {...sessionLite, created: new Date().getTime()}
     fetch(apiUrl + "/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(sessionLite),
+      body: JSON.stringify(sessionLiteUpgraded),
     });
 
     return; // Résolution implicite avec undefined (type void)

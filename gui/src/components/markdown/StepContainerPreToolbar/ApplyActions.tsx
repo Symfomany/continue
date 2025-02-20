@@ -46,7 +46,6 @@ export default function ApplyActions(props: ApplyActionsProps) {
     };
     
     dispatch(createSession({ sessionLite }))
-
     posthog.capture("reject", sessionLite);
           
     setHasRejected(true);

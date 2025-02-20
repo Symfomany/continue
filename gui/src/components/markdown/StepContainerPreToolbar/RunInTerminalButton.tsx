@@ -21,7 +21,7 @@ export default function RunInTerminalButton({
 
     const sessionLite = {
       action: "runCommand",
-      history: command,
+      command: command,
       ide: isJetBrains() ? "Intellij" : "VSCode",
     };
 

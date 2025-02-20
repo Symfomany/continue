@@ -24,6 +24,7 @@ import { useAppDispatch } from "../../../redux/hooks";
 import { createSession } from "../../../redux/thunks/session";
 import { useAuth } from "../../../context/Auth"; // Import du hook useAuth
 import { usePostHog } from "posthog-js/react";
+import { getFileInfo } from "../../../util/detectLanguage";
 
 const TopDiv = styled.div`
   outline: 0.5px solid rgba(153, 153, 152);
@@ -115,17 +116,18 @@ export default function StepContainerPreToolbar(
       curSelectedModelTitle: defaultModel.title,
     });
 
+    const fileInfo = getFileInfo(fileUri);
 
     const sessionLite = {
         action: "applyToFile",
         streamId: streamIdRef.current,
         filepath: fileUri,
+        fileInfo,
         text: codeBlockContent,
         curSelectedModelTitle: defaultModel.title,
         ide: isJetBrains() ? "Intellij" : "VSCode",
         session: session ? session.account : null,
     };
-    console.log(sessionLite, "sessionLite  😍⌨" );
 
 
     dispatch(createSession({ sessionLite }))
@@ -183,7 +185,15 @@ export default function StepContainerPreToolbar(
       streamId: streamIdRef.current,
     });
 
+    const fileInfo = getFileInfo(fileUri);
+    const defaultModel = useAppSelector(selectDefaultModel);
+
+
     const sessionLite = {
+      streamId: streamIdRef.current,
+      filepath: fileUri,
+      fileInfo,
+      curSelectedModelTitle: defaultModel?.title,
       action: "acceptDiff",
       ide: isJetBrains() ? "Intellij" : "VSCode",
       session: session ? session.account : null,
@@ -203,10 +213,18 @@ export default function StepContainerPreToolbar(
       filepath: fileUri,
       streamId: streamIdRef.current,
     });
+        const fileInfo = getFileInfo(fileUri);
+    const defaultModel = useAppSelector(selectDefaultModel);
+
+
     const sessionLite = {
+      streamId: streamIdRef.current,
+      filepath: fileUri,
+      fileInfo,
+      curSelectedModelTitle: defaultModel?.title,
       action: "rejectDiff",
       ide: isJetBrains() ? "Intellij" : "VSCode",
-       session: session ? session.account : null,
+      session: session ? session.account : null,
     };
 
     dispatch(createSession({ sessionLite }))
