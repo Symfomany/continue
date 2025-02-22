@@ -1,6 +1,6 @@
 {
   "name": "continue",
-  "icon": "media/10645125.png",
+  "icon": "media/free-icon.png",
   "author": "Enedis",
   "version": "1.4.0",
   "repository": {
@@ -541,7 +541,7 @@
         {
           "id": "continue",
           "title": "Continue",
-          "icon": "media/10645125.png"
+          "icon": "media/logo-xs.png"
         }
       ]
     },
@@ -551,7 +551,7 @@
           "type": "webview",
           "id": "continue.continueGUIView",
           "name": "Continue",
-          "icon": "media/10645125.png",
+          "icon": "media/logo-xs.png",
           "visibility": "visible"
         }
       ]

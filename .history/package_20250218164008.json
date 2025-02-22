@@ -13,7 +13,7 @@
     "url": "https://github.com/Symfomany/continue.git"
   },
   "activationEvents": [
-    "onCommand:continue.context.focus",
+     "onCommand:continue.context.focus",
     "onCommand:continue.config.focus",
     "onView:continue.context",
     "onView:continue.config",
@@ -76,7 +76,6 @@
     }
   },
   "scripts": {
-    "tsc:watch": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
     "check": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
     "dev": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
     "tsc:gui": "tsc --project gui/tsconfig.json",

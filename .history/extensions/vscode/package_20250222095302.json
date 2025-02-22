@@ -551,7 +551,7 @@
           "type": "webview",
           "id": "continue.continueGUIView",
           "name": "Continue",
-          "icon": "media/10645125.png",
+          "icon": "media/logo-xs.png",
           "visibility": "visible"
         }
       ]
