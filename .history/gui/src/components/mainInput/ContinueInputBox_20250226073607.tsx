@@ -1,0 +1,201 @@
+import { Editor, JSONContent } from "@tiptap/react";
+import { ContextItemWithId, InputModifiers } from "core";
+import { useDispatch } from "react-redux";
+import styled, { keyframes } from "styled-components";
+import { defaultBorderRadius, vscBackground } from "..";
+import { selectSlashCommandComboBoxInputs } from "../../redux/selectors";
+import ContextItemsPeek from "./ContextItemsPeek";
+import TipTapEditor from "./TipTapEditor";
+import { useAppSelector } from "../../redux/hooks";
+import { ToolbarOptions } from "./InputToolbar";
+import { Fragment, useCallback, useMemo, useState } from "react";
+import { MessageTemplate } from "../../redux/slices/configSlice"; // Import du type MessageTemplate
+import { CheckCircleIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import { Listbox, Transition } from "@headlessui/react"; // Ajout de Listbox et Transition
+
+interface ContinueInputBoxProps {
+  isEditMode?: boolean;
+  isLastUserInput: boolean;
+  isMainInput?: boolean;
+  onEnter: (
+    editorState: JSONContent,
+    modifiers: InputModifiers,
+    editor: Editor,
+  ) => void;
+  editorState?: JSONContent;
+  contextItems?: ContextItemWithId[];
+  hidden?: boolean;
+  inputId: string; // used to keep track of things per input in redux
+}
+
+const EDIT_DISALLOWED_CONTEXT_PROVIDERS = [
+  "codebase",
+  "tree",
+  "open",
+  "web",
+  "diff",
+  "folder",
+  "search",
+  "debugger",
+  "repo-map",
+];
+
+const gradient = keyframes`
+  0% {
+    background-position: 0px 0;
+  }
+  100% {
+    background-position: 100em 0;
+  }
+`;
+
+
+const StyledSelect = styled.select`
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 1rem;
+  color: #333;
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.5em;
+  padding-right: 2.5rem;
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+`;
+
+const GradientBorder = styled.div<{
+  borderRadius?: string;
+  borderColor?: string;
+  loading: 0 | 1;
+}>`
+  border-radius: ${(props) => props.borderRadius || "0"};
+  padding: 1px;
+  background: ${(props) =>
+    props.borderColor
+      ? props.borderColor
+      : `repeating-linear-gradient(
+      101.79deg,
+      #1BBE84 0%,
+      #331BBE 16%,
+      #BE1B55 33%,
+      #A6BE1B 55%,
+      #BE1B55 67%,
+      #331BBE 85%,
+      #1BBE84 99%
+    )`};
+  animation: ${(props) => (props.loading ? gradient : "")} 6s linear infinite;
+  background-size: 200% 200%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+function ContinueInputBox(props: ContinueInputBoxProps) {
+  const isStreaming = useAppSelector((state) => state.session.isStreaming);
+  const availableSlashCommands = useAppSelector(
+    selectSlashCommandComboBoxInputs,
+  );
+  const availableContextProviders = useAppSelector(
+    (state) => state.config.config.contextProviders,
+  );
+  const editModeState = useAppSelector((state) => state.editModeState);
+
+  const filteredSlashCommands = props.isEditMode ? [] : availableSlashCommands;
+  const filteredContextProviders = useMemo(() => {
+    if (!props.isEditMode) {
+      return availableContextProviders ?? [];
+    }
+
+    return (
+      availableContextProviders?.filter(
+        (provider) =>
+          !EDIT_DISALLOWED_CONTEXT_PROVIDERS.includes(provider.title),
+      ) ?? []
+    );
+  }, [availableContextProviders]);
+
+  const historyKey = props.isEditMode ? "edit" : "chat";
+  const placeholder = props.isEditMode
+    ? "Décris ton code - utilise '#' pour ajouter des fichiers"
+    : undefined;
+
+  const toolbarOptions: ToolbarOptions = props.isEditMode
+    ? {
+        hideAddContext: false,
+        hideImageUpload: false,
+        hideUseCodebase: true,
+        hideSelectModel: false,
+        enterText: editModeState.editStatus === "accepting" ? "Retry" : "Edit",
+      }
+    : {};
+
+
+     const messageTemplates = useAppSelector((state) => state.config.messageTemplates); // Récupère les templates depuis Redux
+    const [selectedTemplate, setSelectedTemplate] = useState < MessageTemplate | null > (null); // State pour le template sélectionné
+      const [currentEditorState, setCurrentEditorState] = useState<JSONContent | undefined>(props.editorState);
+    // Callback pour mettre à jour le contenu de l'éditeur TipTap lors de la sélection d'un template
+  
+    const handleTemplateSelect = useCallback(
+        (template: MessageTemplate) => {
+            setSelectedTemplate(template);
+            //Update the state
+            setCurrentEditorState(template ? JSON.parse(template.content) : props.editorState);
+
+        },
+        [props.editorState],
+    );
+
+  return (
+    <div className={`${props.hidden ? "hidden" : ""}`}>
+            <div className={`relative flex flex-col px-2`}>
+                <GradientBorder
+                    loading={isStreaming && props.isLastUserInput ? 1 : 0}
+                    borderColor={
+                        isStreaming && props.isLastUserInput ? undefined : vscBackground
+                    }
+                    borderRadius={defaultBorderRadius}
+                >
+                    <TipTapEditor
+                        onEnter={props.onEnter}
+                        placeholder={placeholder}
+                        isMainInput={props.isMainInput ?? false}
+                        availableContextProviders={filteredContextProviders}
+                        availableSlashCommands={filteredSlashCommands}
+                        historyKey={historyKey}
+                        toolbarOptions={toolbarOptions}
+                        inputId={props.inputId}
+                        editorState={currentEditorState} // Set content here
+                    />
+                </GradientBorder>
+            </div>
+
+
+             {messageTemplates.length ? <div className={`relative flex flex-col px-2`}>
+              <select value={selectedTemplate ? selectedTemplate.id : ""} onChange={handleTemplateSelect}>
+                    <option value="">Sélectionner un template</option>
+                    {messageTemplates.map((template) => (
+                        <option key={template.id} value={template.id}>
+                            {template.title}
+                        </option>
+                    ))}
+                </select>
+            </div> : <></>}
+
+            <ContextItemsPeek
+                contextItems={props.contextItems}
+                isCurrentContextPeek={props.isLastUserInput}
+            />
+        </div>
+  );
+}
+
+export default ContinueInputBox;
