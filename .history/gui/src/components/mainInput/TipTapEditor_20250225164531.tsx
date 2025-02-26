@@ -182,18 +182,17 @@ function getDataUrlForFile(
 interface TipTapEditorProps {
   availableContextProviders: ContextProviderDescription[];
   availableSlashCommands: ComboBoxItem[];
-   isMainInput: boolean;
+  isMainInput: boolean;
   onEnter: (
     editorState: JSONContent,
     modifiers: InputModifiers,
     editor: Editor,
   ) => void;
-  editorState?: any;
+   editorState?: any;
   toolbarOptions?: ToolbarOptions;
   placeholder?: string;
   historyKey: string;
   inputId: string;
-   initialContent?: string; 
 }
 
 export const TIPPY_DIV_ID = "tippy-js-div";

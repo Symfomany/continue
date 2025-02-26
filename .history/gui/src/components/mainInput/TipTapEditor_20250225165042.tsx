@@ -182,7 +182,7 @@ function getDataUrlForFile(
 interface TipTapEditorProps {
   availableContextProviders: ContextProviderDescription[];
   availableSlashCommands: ComboBoxItem[];
-   isMainInput: boolean;
+   isMainInput?: boolean;
   onEnter: (
     editorState: JSONContent,
     modifiers: InputModifiers,
