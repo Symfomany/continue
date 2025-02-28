@@ -1,0 +1,106 @@
+{
+  "name": "enedisai",
+  "displayName": "EnedisAI",
+  "description": "AI Coding assistant for Enedis",
+  "version": "0.7.7",
+  "publisher": "Enedis",
+  "engines": {
+    "vscode": "^1.75.0",
+    "intellij": "2023.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Symfomany/continue.git"
+  },
+  "activationEvents": [
+    "onCommand:continue.context.focus",
+    "onCommand:continue.config.focus",
+    "onView:continue.context",
+    "onView:continue.config",
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "continue.context.focus",
+        "title": "Continue: Focus Context Sidebar",
+        "category": "Continue"
+      },
+      {
+        "command": "continue.config.focus",
+        "title": "Continue: Focus Config Sidebar",
+        "category": "Continue"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "continue.context",
+          "name": "Context",
+          "icon": "media/continue.svg",
+          "type": "webview"
+        },
+        {
+          "id": "continue.config",
+          "name": "Config",
+          "icon": "media/continue.svg",
+          "type": "webview"
+        }
+      ]
+    },
+    "views": {
+      "continue.activitybar": [
+        {
+          "id": "continue.context",
+          "name": "Context",
+          "icon": "media/continue.svg",
+          "type": "webview"
+        },
+        {
+          "id": "continue.config",
+          "name": "Config",
+          "icon": "media/continue.svg",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Continue",
+      "properties": {
+        "continue.enableTelemetry": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable telemetry to help improve Continue"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "tsc:watch": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
+    "check": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
+    "dev": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
+    "tsc:gui": "tsc --project gui/tsconfig.json",
+    "tsc:vscode": "tsc --project extensions/vscode/tsconfig.json",
+    "tsc:core": "tsc --project core/tsconfig.json",
+    "tsc:binary": "tsc --project binary/tsconfig.json",
+    "build": "npm run tsc:gui && npm run tsc:vscode && npm run tsc:core && npm run tsc:binary",
+    "package": "vsce package",
+    "watch": "npx concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
+    "tsc:watch:gui": "tsc --project gui/tsconfig.json --watch --preserveWatchOutput",
+    "tsc:watch:vscode": "tsc --project extensions/vscode/tsconfig.json --watch --preserveWatchOutput",
+    "tsc:watch:core": "tsc --project core/tsconfig.json --watch  --preserveWatchOutput",
+    "tsc:watch:binary": "tsc --project binary/tsconfig.json --watch --preserveWatchOutput",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "main": "out/extension.js",
+  "devDependencies": {
+    "@typescript-eslint/parser": "^7.8.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.29.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "@types/node": "16.11.14",
+    "@types/vscode": "^1.75.0"
+  },
+  "dependencies": {}
+}

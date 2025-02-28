@@ -8,7 +8,11 @@
 
 <div align="center">
 
+<<<<<<< HEAD
 **[Développeur Augmenté](https://docs.continue.dev) est un assistant de code IA open-source de pointe, conçu pour Enedis. Connectez n'importe quel modèle et contexte pour créer des expériences d'autocomplétion et de chat personnalisées à l'intérieur de [VS Code](https://marketplace.visualstudio.com/items?itemName=Continue.continue) et [JetBrains](https://plugins.jetbrains.com/plugin/22707-continue-extension).**
+=======
+**[Continue](https://docs.continue.dev) enables to developers to create, share, and use custom AI code assistants with our open-source [VS Code](https://marketplace.visualstudio.com/items?itemName=Continue.continue) and [JetBrains](https://plugins.jetbrains.com/plugin/22707-continue-extension) extensions and [hub of models, rules, prompts, docs, and other building blocks](https://hub.continue.dev)**
+>>>>>>> upstream/main
 
 </div>
 
@@ -46,7 +50,11 @@ L'[Edition](https://continue.dev/docs/edit/how-to-use-it) est un moyen pratique 
 
 ## Actions
 
+<<<<<<< HEAD
 Les [Actions](https://continue.dev/docs/actions/how-to-use-it) sont des raccourcis pour les cas d'utilisation courants.
+=======
+[Actions](https://continue.dev/docs/actions/how-to-use-it) are shortcuts for common use cases
+>>>>>>> upstream/main
 
 ![actions](docs/static/img/actions.gif)
 

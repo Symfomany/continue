@@ -31,12 +31,6 @@ export const selectProfileThunk = createAsyncThunk<
 
   let newId = id;
 
-  console.log(
-    "Running Thunk: ",
-    initialId,
-    newId,
-    state.session.availableProfiles,
-  );
   // If no profiles, force clear
   if (state.session.availableProfiles.length === 0) {
     newId = null;
@@ -55,12 +49,6 @@ export const selectProfileThunk = createAsyncThunk<
   }
 
   // Only update if there's a change
-  console.log(
-    "update selected profile?",
-    newId,
-    initialId,
-    state.session.availableProfiles,
-  );
   if ((newId ?? null) !== (initialId ?? null)) {
     dispatch(
       setSelectedProfile(
@@ -112,7 +100,6 @@ export const updateProfilesThunk = createAsyncThunk<
   dispatch(setAvailableProfiles(profiles));
 
   // This will trigger reselection if needed
-  console.log("selecting 3", selectedProfileId);
   dispatch(selectProfileThunk(selectedProfileId));
 });
 
