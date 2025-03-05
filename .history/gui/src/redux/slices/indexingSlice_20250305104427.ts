@@ -26,6 +26,9 @@ export const indexingSlice = createSlice({
       { payload }: PayloadAction<IndexingStatus>,
     ) => {
 
+      console.log("Indexing  status !!", state, payload);
+
+
       state.indexing.statuses = {
         ...state.indexing.statuses,
         [payload.id]: payload,

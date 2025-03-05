@@ -1,20 +1,19 @@
+import { useDispatch } from "react-redux";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import Layout from "./components/Layout";
-import { SubmenuContextProvidersProvider } from "./context/SubmenuContextProviders";
 import { VscThemeProvider } from "./context/VscTheme";
 import useSetup from "./hooks/useSetup";
 import { AddNewModel, ConfigureProvider } from "./pages/AddNewModel";
-import ConfigPage from "./pages/config";
 import ConfigErrorPage from "./pages/config-error";
 import ErrorPage from "./pages/error";
 import Chat from "./pages/gui";
 import History from "./pages/history";
-import Login from "./pages/login";
 import MigrationPage from "./pages/migration";
 import MorePage from "./pages/More";
 import Stats from "./pages/stats";
-import ProtectedRoute from './ProtectedRoute';
 import { ROUTES } from "./util/navigation";
+import { SubmenuContextProvidersProvider } from "./context/SubmenuContextProviders";
+import ConfigPage from "./pages/config";
 
 const router = createMemoryRouter([
   {
@@ -24,47 +23,43 @@ const router = createMemoryRouter([
     children: [
       {
         path: "/index.html",
-        element: <ProtectedRoute><Chat /></ProtectedRoute>,
+        element: <Chat />,
       },
       {
         path: ROUTES.HOME,
-        element: <ProtectedRoute><Chat /></ProtectedRoute>,
+        element: <Chat />,
       },
       {
         path: "/history",
-        element: <ProtectedRoute><History /></ProtectedRoute>,
+        element: <History />,
       },
       {
         path: "/stats",
-        element: <ProtectedRoute><Stats /></ProtectedRoute>,
-      },
-      {
-        path: "/login",
-        element: <Login />,
+        element: <Stats />,
       },
       {
         path: "/addModel",
-        element: <ProtectedRoute><AddNewModel /></ProtectedRoute>,
+        element: <AddNewModel />,
       },
       {
         path: "/addModel/provider/:providerName",
-        element: <ProtectedRoute><ConfigureProvider /></ProtectedRoute>,
+        element: <ConfigureProvider />,
       },
       {
         path: "/more",
-        element: <ProtectedRoute><MorePage /></ProtectedRoute>,
+        element: <MorePage />,
       },
       {
         path: ROUTES.CONFIG_ERROR,
-        element: <ProtectedRoute><ConfigErrorPage /></ProtectedRoute>,
+        element: <ConfigErrorPage />,
       },
       {
         path: ROUTES.CONFIG,
-        element: <ProtectedRoute><ConfigPage /></ProtectedRoute>,
+        element: <ConfigPage />,
       },
       {
         path: "/migration",
-        element: <ProtectedRoute><MigrationPage /></ProtectedRoute>,
+        element: <MigrationPage />,
       },
     ],
   },

@@ -578,6 +578,9 @@ export const sessionSlice = createSlice({
     },
     updateApplyState: (state, { payload }: PayloadAction<ApplyState>) => {
 
+
+      console.log("updateApplyState !!!", state, payload);
+      
       const applyState = state.codeBlockApplyStates.states.find(
         (state) => state.streamId === payload.streamId,
       );
@@ -636,12 +639,16 @@ export const sessionSlice = createSlice({
       toolCallState.output = action.payload;
     },
     cancelToolCall: (state) => {
+          console.log("Canceled  !!!", state);
       const toolCallState = findCurrentToolCall(state.history);
       if (!toolCallState) return;
 
       toolCallState.status = "canceled";
     },
     acceptToolCall: (state) => {
+
+      console.log("Accepted !!!", state);
+      
       const toolCallState = findCurrentToolCall(state.history);
       if (!toolCallState) return;
 

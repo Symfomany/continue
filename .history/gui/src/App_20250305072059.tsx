@@ -13,7 +13,6 @@ import Login from "./pages/login";
 import MigrationPage from "./pages/migration";
 import MorePage from "./pages/More";
 import Stats from "./pages/stats";
-import ProtectedRoute from './ProtectedRoute';
 import { ROUTES } from "./util/navigation";
 
 const router = createMemoryRouter([
@@ -24,19 +23,19 @@ const router = createMemoryRouter([
     children: [
       {
         path: "/index.html",
-        element: <ProtectedRoute><Chat /></ProtectedRoute>,
+        element: <Chat />,
       },
       {
         path: ROUTES.HOME,
-        element: <ProtectedRoute><Chat /></ProtectedRoute>,
+        element: <Chat />,
       },
       {
         path: "/history",
-        element: <ProtectedRoute><History /></ProtectedRoute>,
+        element: <History />,
       },
       {
         path: "/stats",
-        element: <ProtectedRoute><Stats /></ProtectedRoute>,
+        element: <Stats />,
       },
       {
         path: "/login",
@@ -44,27 +43,27 @@ const router = createMemoryRouter([
       },
       {
         path: "/addModel",
-        element: <ProtectedRoute><AddNewModel /></ProtectedRoute>,
+        element: <AddNewModel />,
       },
       {
         path: "/addModel/provider/:providerName",
-        element: <ProtectedRoute><ConfigureProvider /></ProtectedRoute>,
+        element: <ConfigureProvider />,
       },
       {
         path: "/more",
-        element: <ProtectedRoute><MorePage /></ProtectedRoute>,
+        element: <MorePage />,
       },
       {
         path: ROUTES.CONFIG_ERROR,
-        element: <ProtectedRoute><ConfigErrorPage /></ProtectedRoute>,
+        element: <ConfigErrorPage />,
       },
       {
         path: ROUTES.CONFIG,
-        element: <ProtectedRoute><ConfigPage /></ProtectedRoute>,
+        element: <ConfigPage />,
       },
       {
         path: "/migration",
-        element: <ProtectedRoute><MigrationPage /></ProtectedRoute>,
+        element: <MigrationPage />,
       },
     ],
   },

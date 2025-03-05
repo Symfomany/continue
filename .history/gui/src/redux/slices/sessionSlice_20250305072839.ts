@@ -577,7 +577,6 @@ export const sessionSlice = createSlice({
       state.curCheckpointIndex = payload;
     },
     updateApplyState: (state, { payload }: PayloadAction<ApplyState>) => {
-
       const applyState = state.codeBlockApplyStates.states.find(
         (state) => state.streamId === payload.streamId,
       );

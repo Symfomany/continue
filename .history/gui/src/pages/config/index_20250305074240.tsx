@@ -140,7 +140,6 @@ useEffect(() => {
       dispatch(createSession({ sessionLite }));
       showToast("A bientôt 👋", { type: 'success', duration: 3000, direction: 'top' });
       logout()
-      navigate('/login')
     }
 
   const handleSubmit = async () => {
@@ -341,19 +340,6 @@ useEffect(() => {
         <div className="flex flex-col">
           <div className="flex max-w-[400px] flex-col gap-4 py-4">
              {!session ? <h2 className="mb-1 mt-0">🔐 Connexion Enedis</h2> : <h2 className="mb-1 mt-0">👋 Bienvenue</h2>}
-
-             {session  ? <div className="flex flex-row items-center gap-2">
-                  <span className="text-lightgray">
-                    {session.account.prenom === ""
-                      ? "Signed in"
-                      : `Connecté sur ${session.account.prenom} ${session.account.nom}`}
-                  </span>
-                  <span
-                    onClick={handleLogout}
-                    className="text-lightgray cursor-pointer underline"
-                  >{`Se déconnecter`}</span>
-                </div> : <></>}
-
              {/* <img src={`${window.vscMediaUrl}/6723401-200.png`} height="25px" /> */}
             {!session ? (
               <div className="flex flex-col gap-2">
@@ -395,7 +381,17 @@ useEffect(() => {
                     <Button className="bg-black text-white"
                       onClick={updatePersonna}> <CheckCircleIcon className="h-4 w-4 text-green-500" /> Mettre a jour mon personna</Button>
                 </>
-                
+                <div className="flex flex-row items-center gap-2">
+                  <span className="text-lightgray">
+                    {session.account.prenom === ""
+                      ? "Signed in"
+                      : `Connecté sur ${session.account.prenom} ${session.account.nom}`}
+                  </span>
+                  <span
+                    onClick={handleLogout}
+                    className="text-lightgray cursor-pointer underline"
+                  >{`Se déconnecter`}</span>
+                </div>
               
             </div> )}
             </div>

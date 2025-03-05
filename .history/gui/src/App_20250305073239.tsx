@@ -13,7 +13,7 @@ import Login from "./pages/login";
 import MigrationPage from "./pages/migration";
 import MorePage from "./pages/More";
 import Stats from "./pages/stats";
-import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from './ProtectedRoute'; // Importe le ProtectedRoute typé
 import { ROUTES } from "./util/navigation";
 
 const router = createMemoryRouter([

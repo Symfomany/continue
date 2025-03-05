@@ -32,6 +32,7 @@ export const editModeStateSlice = createSlice({
       }: PayloadAction<{ status: EditStatus; fileAfterEdit?: string }>,
     ) => {
 
+      console.log("Edit mode status !!", state, payload);
       
       // Only allow valid transitions
       const currentStatus = state.editStatus;

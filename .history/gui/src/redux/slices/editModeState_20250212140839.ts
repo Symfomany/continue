@@ -31,8 +31,6 @@ export const editModeStateSlice = createSlice({
         payload,
       }: PayloadAction<{ status: EditStatus; fileAfterEdit?: string }>,
     ) => {
-
-      
       // Only allow valid transitions
       const currentStatus = state.editStatus;
       if (currentStatus === "not-started" && payload.status === "streaming") {

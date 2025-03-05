@@ -578,6 +578,8 @@ export const sessionSlice = createSlice({
     },
     updateApplyState: (state, { payload }: PayloadAction<ApplyState>) => {
 
+      console.log("updateApplyState", state);
+      
       const applyState = state.codeBlockApplyStates.states.find(
         (state) => state.streamId === payload.streamId,
       );

@@ -25,7 +25,6 @@ export const indexingSlice = createSlice({
       state,
       { payload }: PayloadAction<IndexingStatus>,
     ) => {
-
       state.indexing.statuses = {
         ...state.indexing.statuses,
         [payload.id]: payload,

@@ -33,8 +33,6 @@ export const streamSlashCommand = createAsyncThunk<
     const streamAborter = state.session.streamAborter;
     const toolSettings = state.ui.toolSettings;
 
-    console.log("Stream commands !!", messages, selectedCode, slashCommand, input, contextItems);
-    
     if (!defaultModel) {
       throw new Error("Default model not defined");
     }

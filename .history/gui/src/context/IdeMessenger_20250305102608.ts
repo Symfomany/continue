@@ -144,6 +144,7 @@ export class IdeMessenger implements IIdeMessenger {
     data: ToWebviewProtocol[T][1],
     messageId: string,
   ) {
+    
     this._postToIde(messageType, data, messageId);
   }
 

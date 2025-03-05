@@ -140,7 +140,6 @@ useEffect(() => {
       dispatch(createSession({ sessionLite }));
       showToast("A bientôt 👋", { type: 'success', duration: 3000, direction: 'top' });
       logout()
-      navigate('/login')
     }
 
   const handleSubmit = async () => {
