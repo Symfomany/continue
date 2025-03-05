@@ -7,6 +7,11 @@ const CustomPostHogProvider = ({ children }: PropsWithChildren) => {
   const allowAnonymousTelemetry = useAppSelector(
     (store) => store?.config?.config?.allowAnonymousTelemetry,
   );
+<<<<<<< HEAD
+  const [client, setClient] = React.useState<any>(undefined);
+=======
+
+>>>>>>> upstream/main
   useEffect(() => {
     if (allowAnonymousTelemetry) {
       posthog.init("phc_AqciO8KANMzQgQ1vFxyVczxtcniokwhE9yxEpHMI1V6", {
